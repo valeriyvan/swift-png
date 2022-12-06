@@ -23,7 +23,11 @@ let package = Package(
     ],
     targets: 
     [
-        .target(name: "PNG",                                  dependencies: ["_PNGString"],        path: "sources/png"),
+        .target(name: "PNG",                                  dependencies: ["_PNGString"],        path: "sources/png",
+            swiftSettings: [
+                .define("NO_INTRINSICS", .when(platforms: [.windows])),
+            ]
+        ),
 
         .target(name: "_PNGString",                           dependencies: [],                    path: "sources/string"),
 
