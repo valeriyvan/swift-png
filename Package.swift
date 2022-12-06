@@ -7,7 +7,6 @@ let package = Package(
     [
         .library(   name: "PNG",                        targets: ["PNG"]),
         
-        .executable(name: "unit-test",                  targets: ["PNGUnitTests"]),
         .executable(name: "integration-test",           targets: ["PNGIntegrationTests"]),
         .executable(name: "compression-test",           targets: ["PNGCompressionTests"]),
         .executable(name: "compression-benchmark",      targets: ["PNGCompressionBenchmarks"]), 
@@ -24,10 +23,15 @@ let package = Package(
     ],
     targets: 
     [
-        .target(name: "PNG",                                  dependencies: [],       path: "sources/png"),
-        
-        .executableTarget(name: "PNGUnitTests",               dependencies: ["PNG"],  path: "tests/unit"),
-        .executableTarget(name: "PNGIntegrationTests",        dependencies: ["PNG"],  path: "tests/integration", 
+        .target(name: "PNG",                                  dependencies: ["_PNGString"],        path: "sources/png"),
+
+        .target(name: "_PNGString",                           dependencies: [],                    path: "sources/string"),
+
+        .target(name: "_PNGTestsCommon",                      dependencies: ["PNG"],               path: "tests/common"),
+
+        .testTarget(name: "PNGUnitTests",                     dependencies: ["PNG", "_PNGString"], path: "tests/unit"),
+
+        .executableTarget(name: "PNGIntegrationTests",        dependencies: ["PNG", "_PNGString", "_PNGTestsCommon"], path: "tests/integration",
             exclude: 
             [
                 "PngSuite.LICENSE",
@@ -36,7 +40,7 @@ let package = Package(
                 "out/",
                 "rgba/",
             ]),
-        .executableTarget(name: "PNGCompressionTests",        dependencies: ["PNG"],  path: "tests/compression", 
+        .executableTarget(name: "PNGCompressionTests",        dependencies: ["PNG", "_PNGString", "_PNGTestsCommon"], path: "tests/compression",
             exclude: 
             [
                 "baseline/", 
